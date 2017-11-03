@@ -53,6 +53,8 @@ class SuiteManager
     protected $env = null;
     protected $settings;
 
+    protected $commandCompleted = false;
+
     public function __construct(EventDispatcher $dispatcher, $name, array $settings)
     {
         $this->settings = $settings;
@@ -152,10 +154,21 @@ class SuiteManager
 
     public function run(PHPUnit\Runner $runner, \PHPUnit_Framework_TestResult $result, $options)
     {
+        register_shutdown_function(function () {
+            if ($this->commandCompleted === false) {
+                $lastError = error_get_last();
+                if ($lastError === null || !in_array($lastError['type'], [E_ERROR, E_COMPILE_ERROR, E_CORE_ERROR])) {
+                    throw new \RuntimeException('Command Did Not Finish Properly');
+                }
+            }
+        });
+
         $runner->prepareSuite($this->suite, $options);
         $this->dispatcher->dispatch(Events::SUITE_BEFORE, new Event\SuiteEvent($this->suite, $result, $this->settings));
         $runner->doEnhancedRun($this->suite, $result, $options);
         $this->dispatcher->dispatch(Events::SUITE_AFTER, new Event\SuiteEvent($this->suite, $result, $this->settings));
+
+        $this->commandCompleted = true;
     }
 
     /**
