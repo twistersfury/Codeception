@@ -21,7 +21,12 @@ class DbPopulator
      */
     public function __construct($config)
     {
-        $this->config = $config;
+        $this->config = array_merge(
+            array(
+                'dump' => false
+            ),
+            $config
+        );
     }
 
     /**
@@ -77,7 +82,7 @@ class DbPopulator
      */
     public function run()
     {
-        if (!isset($this->config['dump']) || $this->config['dump'] === false) {
+        if ($this->config['dump'] === false) {
             return $this->runCommand((string) $this->config['populator']);
         } elseif (!is_array($this->config['dump'])) {
             $this->config['dump'] = array($this->config['dump']);
@@ -112,6 +117,6 @@ class DbPopulator
 
     public function getBuiltCommand()
     {
-        return $this->builtCommand;
+        return $this->buildCommand($this->config['dump']);
     }
 }
