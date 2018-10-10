@@ -451,7 +451,7 @@ class Db extends CodeceptionModule implements DbInterface
 
         $sql = '';
 
-        foreach($databaseConfig['dump'] as $filePath) {
+        foreach ($databaseConfig['dump'] as $filePath) {
             $sql .= $this->readSqlFile($filePath);
         }
 
