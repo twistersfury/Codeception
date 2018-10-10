@@ -93,7 +93,7 @@ class DbPopulator
             return $this->runCommand((string) $this->config['populator']);
         }
 
-        foreach($this->buildCommands() as $command) {
+        foreach ($this->buildCommands() as $command) {
             $this->runCommand($command);
         }
 
@@ -128,7 +128,7 @@ class DbPopulator
 
         $this->commands = array();
 
-        foreach($this->config['dump'] as $dumpFile) {
+        foreach ($this->config['dump'] as $dumpFile) {
             $this->commands[] = $this->buildCommand($this->config['populator'], $dumpFile);
         }
 
