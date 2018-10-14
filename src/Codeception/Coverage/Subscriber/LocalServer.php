@@ -141,8 +141,8 @@ class LocalServer extends SuiteSubscriber
             return $this;
         }
 
-        $workDir    = rtrim($this->settings['work_dir'], '/');
-        $projectDir = rtrim(Configuration::projectDir(), '/');
+        $workDir    = rtrim($this->settings['work_dir'], '/\\') . DIRECTORY_SEPARATOR;
+        $projectDir = Configuration::projectDir();
         $data       = $coverage->getData(true); //We only want covered files, not all whitelisted ones.
 
         foreach($data as $path => $datum) {
