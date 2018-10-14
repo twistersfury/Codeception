@@ -9,6 +9,7 @@ use Codeception\Event\TestEvent;
 use Codeception\Events;
 use Codeception\Exception\ModuleException;
 use Codeception\Exception\RemoteException;
+use PHP_CodeCoverage;
 
 /**
  * When collecting code coverage data from local server HTTP requests are sent to c3.php file.
@@ -122,7 +123,39 @@ class LocalServer extends SuiteSubscriber
         if ($coverage === false) {
             return;
         }
-        $this->mergeToPrint($coverage);
+
+        $this->preProcessCoverage($coverage)
+             ->mergeToPrint($coverage);
+    }
+
+    /**
+     * Allows Translating Remote Paths To Local (IE: When Using Docker)
+     *
+     * @param \PHP_CodeCoverage $coverage
+     * @return $this
+     */
+    protected function preProcessCoverage(PHP_CodeCoverage $coverage)
+    {
+        //Only Process If Work Directory Set
+        if ($this->settings['work_dir'] === null) {
+            return;
+        }
+
+        $workDir    = $this->settings['work_dir'];
+        $projectDir = Configuration::projectDir();
+        $data       = $coverage->getData(true); //We only want covered files, not all whitelisted ones.
+
+        foreach($data as $path => $datum) {
+            unset($data[$path]);
+
+            $path = str_replace($workDir, $projectDir, $path);
+
+            $data[$path] = $datum;
+        }
+
+        $coverage->setData($data);
+
+        return $this;
     }
 
     protected function c3Request($action)
