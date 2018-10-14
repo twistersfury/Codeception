@@ -134,7 +134,7 @@ class LocalServer extends SuiteSubscriber
      * @param \PHP_CodeCoverage $coverage
      * @return $this
      */
-    protected function preProcessCoverage(PHP_CodeCoverage $coverage)
+    protected function preProcessCoverage($coverage)
     {
         //Only Process If Work Directory Set
         if ($this->settings['work_dir'] === null) {
