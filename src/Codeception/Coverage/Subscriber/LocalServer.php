@@ -138,7 +138,7 @@ class LocalServer extends SuiteSubscriber
     {
         //Only Process If Work Directory Set
         if ($this->settings['work_dir'] === null) {
-            return;
+            return $this;
         }
 
         $workDir    = $this->settings['work_dir'];
