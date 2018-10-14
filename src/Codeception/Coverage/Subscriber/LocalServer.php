@@ -145,7 +145,7 @@ class LocalServer extends SuiteSubscriber
         $projectDir = Configuration::projectDir();
         $data       = $coverage->getData(true); //We only want covered files, not all whitelisted ones.
 
-        foreach($data as $path => $datum) {
+        foreach ($data as $path => $datum) {
             unset($data[$path]);
 
             $path = str_replace($workDir, $projectDir, $path);
